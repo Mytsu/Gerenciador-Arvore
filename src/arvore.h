@@ -31,3 +31,4 @@ void in_order(Node * arv);
 void pre_order(Node * arv);
 void pos_order(Node * arv);
 int search(Node * arv, int valor);
+void destroyTree(Node * arv);

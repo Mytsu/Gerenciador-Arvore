@@ -1,12 +1,13 @@
 #include "arvore.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 void lerArquivo(FILE * arq);
 Node * parseCmd(Node * arv, char *cmd, char *value, int *key);
 
 int main(int args, char ** argc) {
-    if (args < 1) {
+    if (args < 2) {
         printf("Use %s [FILENAME]\n", argc[0]);
         return 1;
     }
@@ -30,50 +31,55 @@ void lerArquivo(FILE * arq) {
     int * key = (int*)malloc(sizeof(int));
     *key = 1;
     while (*key) {
+        char buffer[20];
         char *cmd, *value;
-        printf("WAIT FOR IT\n");
-        fscanf(arq, "%s %s\n", cmd, value);        
-        printf("WAIT FOR IT\n");
-        printf("%s, %s\n", cmd, value);
+        fgets(buffer, sizeof buffer, arq);
+        cmd = strtok(buffer, " ");
+        value = strtok(NULL, " ");
+        
+        printf("\n%s %s\n", cmd, value);
         arv = parseCmd(arv, cmd, value, key);
+        in_order(arv);
+        printf("\n\n");
     }
+    destroyTree(arv);
 }
 
 Node * parseCmd(Node * arv, char *cmd, char *value, int * key) {
     int vl = 0;
-    if (cmd == "INCLUI") {
+    if ((strcmp("INCLUI", cmd)) == 0) {
         vl = (int)strtol(value, NULL, 10);
-        return insert(arv, vl);
+        arv = insert(arv, vl);
     }
-    else if (cmd == "EXCLUI") {
+    else if ((strcmp("EXCLUI", cmd)) == 0) {
         vl = (int)strtol(value, NULL, 10);
-        return deleteNode(arv, vl);
+        arv = deleteNode(arv, vl);
     }
-    else if (cmd == "IMPRIME" && value == "PREORDEM") {
+    else if ( ((strcmp("IMPRIME", cmd)) == 0) && ((strcmp("PREORDEM\n", value)) == 0) ) {
+        printf("WAIT FOR IT\n");
         pre_order(arv);
     }
-    else if (cmd == "IMPRIME" && value == "INORDEM") {
+    else if ( ((strcmp("IMPRIME", cmd)) == 0) && ((strcmp("INORDEM\n", value)) == 0) ) {
+        printf("WAIT FOR IT\n");
         in_order(arv);
     }
-    else if (cmd == "IMPRIME" && value == "POSORDEM") {
+    else if ( ((strcmp("IMPRIME", cmd)) == 0) && ((strcmp("POSORDEM\n", value)) == 0) ) {
+        printf("WAIT FOR IT\n");
         pos_order(arv);
     }
-    else if (cmd == "BUSCA") {
-        
+    else if ((strcmp("BUSCA", cmd)) == 0) {        
         int sc;
         vl = (int)strtol(value, NULL, 10);
         sc = search(arv, vl);
         if (sc == 0) 
             printf("elemento %d nao encontrado", vl);        
-        else printf("%d", sc);
+        else printf("%d\n", sc);
     }
-    else if (cmd == "FIM") {
+    else if ((strcmp("FIM", cmd)) == 0) {
         *key = 0;
-        return NULL;
     }
     else {
         printf("comando nao reconhecido\n");
-        return NULL;
     }
     return arv;
 }

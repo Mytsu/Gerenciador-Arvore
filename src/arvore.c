@@ -11,9 +11,17 @@
 
 #include "arvore.h"
  
-// A utility function to get maximum of two integers
- 
-// A utility function to get height of the tree
+void destroyTree(Node * arv) {
+    if(arv == NULL)
+        return;
+	if(arv->left == NULL && arv->right == NULL)
+		free(arv);
+	else if(arv->left == NULL)
+		destroyTree(arv->right);
+	else if(arv->right == NULL)
+		destroyTree(arv->left);
+}
+
 int height(Node *N)
 {
     if (N == NULL)
