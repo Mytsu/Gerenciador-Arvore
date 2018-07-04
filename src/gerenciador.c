@@ -32,15 +32,13 @@ void lerArquivo(FILE * arq) {
     *key = 1;
     while (*key) {
         char buffer[20];
-        char *cmd, *value;
-        fgets(buffer, sizeof buffer, arq);
-        cmd = strtok(buffer, " ");
-        value = strtok(NULL, " ");
-        
-        printf("\n%s %s\n", cmd, value);
-        arv = parseCmd(arv, cmd, value, key);
-        in_order(arv);
-        printf("\n\n");
+        char cmd[10];
+        char value[10];        
+        if (fscanf(arq, "%s", cmd) != EOF)
+            if (fscanf(arq, "%s", value) != EOF) {
+                arv = parseCmd(arv, cmd, value, key);
+            } else {}
+        else parseCmd(arv, cmd, value, key);
     }
     destroyTree(arv);
 }
@@ -55,24 +53,24 @@ Node * parseCmd(Node * arv, char *cmd, char *value, int * key) {
         vl = (int)strtol(value, NULL, 10);
         arv = deleteNode(arv, vl);
     }
-    else if ( ((strcmp("IMPRIME", cmd)) == 0) && ((strcmp("PREORDEM\n", value)) == 0) ) {
-        printf("WAIT FOR IT\n");
+    else if ( ((strcmp("IMPRIME", cmd)) == 0) && ((strcmp("PREORDEM", value)) == 0) ) {
         pre_order(arv);
+        printf("\n");
     }
-    else if ( ((strcmp("IMPRIME", cmd)) == 0) && ((strcmp("INORDEM\n", value)) == 0) ) {
-        printf("WAIT FOR IT\n");
+    else if ( ((strcmp("IMPRIME", cmd)) == 0) && ((strcmp("INORDEM", value)) == 0) ) {
         in_order(arv);
+        printf("\n");
     }
-    else if ( ((strcmp("IMPRIME", cmd)) == 0) && ((strcmp("POSORDEM\n", value)) == 0) ) {
-        printf("WAIT FOR IT\n");
+    else if ( ((strcmp("IMPRIME", cmd)) == 0) && ((strcmp("POSORDEM", value)) == 0) ) {
         pos_order(arv);
+        printf("\n");
     }
     else if ((strcmp("BUSCA", cmd)) == 0) {        
         int sc;
         vl = (int)strtol(value, NULL, 10);
         sc = search(arv, vl);
         if (sc == 0) 
-            printf("elemento %d nao encontrado", vl);        
+            printf("elemento %d nao encontrado\n", vl);        
         else printf("%d\n", sc);
     }
     else if ((strcmp("FIM", cmd)) == 0) {
